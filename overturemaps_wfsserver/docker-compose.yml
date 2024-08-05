@@ -13,6 +13,29 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
 
+  geoserver:
+    image: docker.osgeo.org/geoserver:2.25.2
+    hostname: geoserver
+    ports:
+      - "8081:8080"
+    volumes:
+      - geoserver_data:/opt/geoserver_data
+
+  overturemapsserver:
+    build: .
+    container_name: overturemaps_wfsserver
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+      - ./workarounds/wfs20.py:/usr/local/lib/python3.10/site-packages/gisserver/operations/wfs20.py
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DEBUG=True
+      
 volumes:
   pg_data:
+  geoserver_data:
 

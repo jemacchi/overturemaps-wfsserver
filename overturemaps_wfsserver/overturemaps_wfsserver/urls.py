@@ -20,5 +20,5 @@ from overturemaps_wfsserver_app import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("wfs/locations/", views.LocationWFSView.as_view()),
+    path("wfs/overturemaps/", views.OverturemapsWFSView.as_view()),
 ]
