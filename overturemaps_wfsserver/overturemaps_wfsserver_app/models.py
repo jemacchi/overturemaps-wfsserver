@@ -9,8 +9,7 @@ import shapely.wkb
 from overturemaps import record_batch_reader
 
 from django.contrib.gis.db import models
-from django.contrib.gis.geos import Polygon
-from django.contrib.gis.geos import Polygon, GEOSGeometry
+from django.contrib.gis.geos import Polygon, LinearRing, GEOSGeometry
 from gisserver.features import FeatureType
 from django.db import transaction
 from django.conf import settings
@@ -168,34 +167,37 @@ class OverturemapsBuildingFeatureType(FeatureType):
             for feature in features:
                 properties = feature['properties']
                 geom = feature['geometry']
-                polygon = Polygon(geom['coordinates'][0])
+                try:
+                    exterior_ring = LinearRing(geom['coordinates'][0])
+                    polygon = Polygon(exterior_ring)
+                    polygon.srid = 4326
 
-                polygon.srid = 4326
-                if not polygon.valid:
-                    continue
-                #if not polygon.valid:
-                #    polygon = polygon.make_valid()
+                    if not polygon.valid:
+                        continue
 
-                instance, created = OverturemapsBuildingModel.objects.update_or_create(
-                    geo_id=properties['id'],
-                    defaults={
-                        'version': properties['version'],
-                        'update_time': properties['update_time'],
-                        'has_parts': properties['has_parts'],
-                        'geometry': polygon,
-                    }
-                )
-
-                if not created:
-                    instance.sources.clear()
-
-                for source in properties['sources']:
-                    source_instance = OverturemapsSourceModel.objects.create(
-                        property=source['property'],
-                        dataset=source['dataset'],
-                        record_id=source['record_id'],
-                        confidence=source['confidence']
+                    instance, created = OverturemapsBuildingModel.objects.update_or_create(
+                        geo_id=properties['id'],
+                        defaults={
+                            'version': properties['version'],
+                            'update_time': properties['update_time'],
+                            'has_parts': properties['has_parts'],
+                            'geometry': polygon,
+                        }
                     )
-                    instance.sources.add(source_instance)
-                instances.append(instance)
+
+                    if not created:
+                        instance.sources.clear()
+
+                    for source in properties['sources']:
+                        source_instance = GeoJSONSource.objects.create(
+                            property=source['property'],
+                            dataset=source['dataset'],
+                            record_id=source['record_id'],
+                            confidence=source['confidence']
+                        )
+                        instance.sources.add(source_instance)
+                    instances.append(instance)
+                except (ValueError, TypeError) as e:
+                    print(f"DEBUG: Error al crear el polígono para el feature {properties['id']}: {e}")
+                    continue
         return instances
