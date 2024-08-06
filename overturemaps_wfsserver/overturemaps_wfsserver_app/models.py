@@ -170,6 +170,7 @@ class OverturemapsBuildingFeatureType(FeatureType):
                 geom = feature['geometry']
                 polygon = Polygon(geom['coordinates'][0])
 
+                polygon.srid = 4326
                 polygon = MakeValid(polygon)
 
                 instance, created = OverturemapsBuildingModel.objects.update_or_create(
