@@ -10,7 +10,7 @@ from overturemaps import record_batch_reader
 
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import Polygon
-from django.contrib.gis.db.models.functions import MakeValid
+from django.contrib.gis.geos import Polygon, GEOSGeometry
 from gisserver.features import FeatureType
 from django.db import transaction
 from django.conf import settings
@@ -171,7 +171,8 @@ class OverturemapsBuildingFeatureType(FeatureType):
                 polygon = Polygon(geom['coordinates'][0])
 
                 polygon.srid = 4326
-                polygon = MakeValid(polygon)
+                if not polygon.valid:
+                    polygon = polygon.make_valid()
 
                 instance, created = OverturemapsBuildingModel.objects.update_or_create(
                     geo_id=properties['id'],
