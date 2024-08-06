@@ -17,6 +17,16 @@ from django.conf import settings
 import logging
 logger = logging.getLogger('wfsserver')
 
+def is_bbox_contained(new_min_x, new_min_y, new_max_x, new_max_y):
+    bbox_requests = BBOXRequestBuildingModel.objects.all()
+    for bbox in bbox_requests:
+        if (bbox.min_x <= new_min_x <= bbox.max_x and
+            bbox.min_y <= new_min_y <= bbox.max_y and
+            bbox.min_x <= new_max_x <= bbox.max_x and
+            bbox.min_y <= new_max_y <= bbox.max_y):
+            return True
+    return False
+
 def get_writer(output_format, path, schema):
     if output_format == "geojson":
         writer = GeoJSONWriter(path)
@@ -124,16 +134,30 @@ class OverturemapsBuildingModel(models.Model):
     def __str__(self):
         return self.geo_id
 
+class BBOXRequestBuildingModel(models.Model):
+    timestamp = models.DateTimeField(auto_now_add=True)
+    min_x = models.FloatField()
+    min_y = models.FloatField()
+    max_x = models.FloatField()
+    max_y = models.FloatField()
+
+    def __str__(self):
+        return f"BBOX({self.min_x}, {self.min_y}, {self.max_x}, {self.max_y}) at {self.timestamp}"
+
 class OverturemapsBuildingFeatureType(FeatureType):
 
     bbox = None
-    # deprecated
-    geojson_path = os.path.join(settings.BASE_DIR, 'overturemaps_wfsserver/static/geojson/tandil.json')
 
     def set_data(self, bb):
         self.bbox = bb
         logger.debug(bb)
-        self.dump_to_database()
+        min_x, min_y, max_x, max_y = bb
+        if is_bbox_contained(min_x, min_y, max_x, max_y):
+            logger.debug('DEBUG: BBOX is already contained in database')
+            return
+        else:
+            self.dump_to_database()
+            bbox_request = BBOXRequestBuildingModel.objects.create(min_x=min_x,min_y=min_y,max_x=max_x,max_y=max_y)
 
     def _load_overturemaps(self):
         datatype = 'building'
@@ -146,11 +170,6 @@ class OverturemapsBuildingFeatureType(FeatureType):
         gj = geojson.loads(output.getvalue())
         return gj
 
-    def _load_geojson(self):
-        with open(self.geojson_path) as f:
-            gj = geojson.load(f)
-        return gj
-
     def get_queryset(self):
         logger.debug('DEBUG: get queryset')
         return super().get_queryset()
@@ -158,7 +177,6 @@ class OverturemapsBuildingFeatureType(FeatureType):
     def dump_to_database(self):
         # load from overturemaps
         self.data = self._load_overturemaps()
-        #self.data = self._load_geojson()
         # dump to database
         features = self.data['features']
         logger.debug('DEBUG: dumping')
