@@ -4,8 +4,9 @@ En un sistema basado en Debian/Ubuntu:
 bash
 Copy code
 sudo apt-get update
-sudo apt-get install binutils libproj-dev gdal-bin s
+sudo apt-get install binutils libproj-dev gdal-bin
 sudo apt-get install libgdal-dev
+sudo apt-get install build-essential libssl-dev libffi-dev python3-dev
 
 En macOS usando Homebrew:
 
