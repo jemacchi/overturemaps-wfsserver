@@ -1,0 +1,32 @@
+<dataStore>
+  <id>DataStoreInfoImpl--5bba4775:1934ee4fb50:-7fd5</id>
+  <name>overturemaps-wfsserver</name>
+  <type>Web Feature Server (NG)</type>
+  <enabled>true</enabled>
+  <workspace>
+    <id>WorkspaceInfoImpl--5bba4775:1934ee4fb50:-8000</id>
+  </workspace>
+  <connectionParameters>
+    <entry key="WFSDataStoreFactory:TRY_GZIP">true</entry>
+    <entry key="WFSDataStoreFactory:GML_COMPATIBLE_TYPENAMES">false</entry>
+    <entry key="WFSDataStoreFactory:LENIENT">false</entry>
+    <entry key="usedefaultsrs">false</entry>
+    <entry key="WFSDataStoreFactory:AXIS_ORDER">Compliant</entry>
+    <entry key="WFSDataStoreFactory:PROTOCOL">false</entry>
+    <entry key="WFSDataStoreFactory:GML_COMPLIANCE_LEVEL">0</entry>
+    <entry key="WFSDataStoreFactory:GET_CAPABILITIES_URL">http://overturemapsserver:8000/wfs/overturemaps/?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetCapabilities</entry>
+    <entry key="WFSDataStoreFactory:MAX_CONNECTION_POOL_SIZE">6</entry>
+    <entry key="WFSDataStoreFactory:MAXFEATURES">0</entry>
+    <entry key="WFSDataStoreFactory:TIMEOUT">120000</entry>
+    <entry key="WFSDataStoreFactory:BUFFER_SIZE">10</entry>
+    <entry key="namespace">http://overturemaps/sample</entry>
+    <entry key="WFSDataStoreFactory:WFS_STRATEGY">auto</entry>
+    <entry key="WFSDataStoreFactory:AXIS_ORDER_FILTER">Compliant</entry>
+    <entry key="WFSDataStoreFactory:USE_HTTP_CONNECTION_POOLING">true</entry>
+    <entry key="WFSDataStoreFactory:ENCODING">UTF-8</entry>
+  </connectionParameters>
+  <__default>false</__default>
+  <dateCreated>2024-11-21 13:29:44.586 UTC</dateCreated>
+  <dateModified>2024-11-21 14:18:28.774 UTC</dateModified>
+  <disableOnConnFailure>false</disableOnConnFailure>
+</dataStore>

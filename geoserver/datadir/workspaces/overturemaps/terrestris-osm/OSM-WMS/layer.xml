@@ -1,0 +1,16 @@
+<layer>
+  <name>OSM-WMS</name>
+  <id>LayerInfoImpl--5bba4775:1934ee4fb50:-7ffc</id>
+  <type>WMS</type>
+  <defaultStyle>
+    <name></name>
+  </defaultStyle>
+  <resource class="wmsLayer">
+    <id>WMSLayerInfoImpl--5bba4775:1934ee4fb50:-7ffd</id>
+  </resource>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+  <dateCreated>2024-11-21 13:25:20.201 UTC</dateCreated>
+</layer>

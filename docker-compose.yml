@@ -3,7 +3,8 @@ version: '3.8'
 services:
   db:
     image: postgis/postgis:latest
-    container_name: postgis
+    container_name: db
+    hostname: db
     environment:
       POSTGRES_DB: overturemaps_wfsserver_db
       POSTGRES_USER: ovrwfsserver_user
@@ -16,26 +17,31 @@ services:
   geoserver:
     image: docker.osgeo.org/geoserver:2.25.2
     hostname: geoserver
+    container_name: geoserver
     ports:
-      - "8081:8080"
+      - "8080:8080"
     volumes:
-      - geoserver_data:/opt/geoserver_data
+      - ./geoserver/datadir:/opt/geoserver_data
 
   overturemapsserver:
-    build: .
-    container_name: overturemaps_wfsserver
-    command: python manage.py runserver 0.0.0.0:8000
+    build:
+      context: ./overturemaps_wfsserver
+      dockerfile: Dockerfile
+    hostname: overturemapsserver
+    container_name: overturemapsserver
+    command: >
+      sh -c "dockerize -wait tcp://db:5432 -timeout 60s &&
+             python manage.py makemigrations &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
     volumes:
-      - .:/app
-      - ./workarounds/wfs20.py:/usr/local/lib/python3.10/site-packages/gisserver/operations/wfs20.py
+      - ./overturemaps_wfsserver:/app
     ports:
       - "8000:8000"
     depends_on:
       - db
     environment:
       - DEBUG=True
-      
+
 volumes:
   pg_data:
-  geoserver_data:
-

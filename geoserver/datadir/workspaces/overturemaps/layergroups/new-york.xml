@@ -1,0 +1,34 @@
+<layerGroup>
+  <id>LayerGroupInfoImpl--5bba4775:1934ee4fb50:-7fd2</id>
+  <name>new-york</name>
+  <mode>SINGLE</mode>
+  <title>New York</title>
+  <workspace>
+    <id>WorkspaceInfoImpl--5bba4775:1934ee4fb50:-8000</id>
+  </workspace>
+  <internationalTitle/>
+  <internationalAbstract/>
+  <publishables>
+    <published type="layer">
+      <id>LayerInfoImpl--5bba4775:1934ee4fb50:-7ffc</id>
+    </published>
+    <published type="layer">
+      <id>LayerInfoImpl--5bba4775:1934ee4fb50:-7fd3</id>
+    </published>
+  </publishables>
+  <styles>
+    <style/>
+    <style>
+      <id>StyleInfoImpl-5f4ee065:1934efbb985:-7fff</id>
+    </style>
+  </styles>
+  <bounds>
+    <minx>-74.047185</minx>
+    <maxx>-73.907005</maxx>
+    <miny>40.679648</miny>
+    <maxy>40.882078</maxy>
+    <crs>EPSG:4326</crs>
+  </bounds>
+  <dateCreated>2024-11-21 13:32:54.49 UTC</dateCreated>
+  <dateModified>2024-11-21 13:51:33.225 UTC</dateModified>
+</layerGroup>

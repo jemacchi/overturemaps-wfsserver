@@ -1,0 +1,19 @@
+<wmsStore>
+  <id>WMSStoreInfoImpl--5bba4775:1934ee4fb50:-7ffe</id>
+  <name>terrestris-osm</name>
+  <type>WMS</type>
+  <enabled>true</enabled>
+  <workspace>
+    <id>WorkspaceInfoImpl--5bba4775:1934ee4fb50:-8000</id>
+  </workspace>
+  <metadata>
+    <entry key="useConnectionPooling">true</entry>
+  </metadata>
+  <__default>false</__default>
+  <dateCreated>2024-11-21 13:25:11.329 UTC</dateCreated>
+  <disableOnConnFailure>false</disableOnConnFailure>
+  <capabilitiesURL>https://ows.terrestris.de/osm/service?SERVICE=WMS&amp;REQUEST=GetCapabilities</capabilitiesURL>
+  <maxConnections>6</maxConnections>
+  <readTimeout>60</readTimeout>
+  <connectTimeout>30</connectTimeout>
+</wmsStore>
