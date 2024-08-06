@@ -4,7 +4,9 @@ En un sistema basado en Debian/Ubuntu:
 bash
 Copy code
 sudo apt-get update
-sudo apt-get install binutils libproj-dev gdal-bin
+sudo apt-get install binutils libproj-dev gdal-bin s
+sudo apt-get install libgdal-dev
+
 En macOS usando Homebrew:
 
 bash

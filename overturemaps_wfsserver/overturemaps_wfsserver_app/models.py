@@ -133,15 +133,13 @@ class OverturemapsBuildingFeatureType(FeatureType):
     def set_data(self, bb):
         self.bbox = bb
         logger.debug(bb)
-        # comento el dump a bd hasta tanto no controle la carga
         self.dump_to_database()
 
     def _load_overturemaps(self):
-        bbox = (-59.171717, -37.296968, -59.170681, -37.296447)
         datatype = 'building'
         output_format = 'geojson'
         output = io.StringIO()
-        reader = record_batch_reader(datatype, bbox)
+        reader = record_batch_reader(datatype, self.bbox)
         with get_writer(output_format, output, schema=reader.schema) as writer:
             copy(reader, writer)
         output.seek(0)
