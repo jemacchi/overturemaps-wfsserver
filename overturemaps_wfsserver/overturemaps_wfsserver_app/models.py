@@ -189,7 +189,7 @@ class OverturemapsBuildingFeatureType(FeatureType):
                         instance.sources.clear()
 
                     for source in properties['sources']:
-                        source_instance = GeoJSONSource.objects.create(
+                        source_instance = OverturemapsSourceModel.objects.create(
                             property=source['property'],
                             dataset=source['dataset'],
                             record_id=source['record_id'],
