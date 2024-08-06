@@ -172,7 +172,9 @@ class OverturemapsBuildingFeatureType(FeatureType):
 
                 polygon.srid = 4326
                 if not polygon.valid:
-                    polygon = polygon.make_valid()
+                    continue
+                #if not polygon.valid:
+                #    polygon = polygon.make_valid()
 
                 instance, created = OverturemapsBuildingModel.objects.update_or_create(
                     geo_id=properties['id'],
