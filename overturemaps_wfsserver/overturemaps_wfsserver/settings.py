@@ -82,7 +82,7 @@ DATABASES = {
         'NAME': 'overturemaps_wfsserver_db',
         'USER': 'ovrwfsserver_user',
         'PASSWORD': 'overturemaps',
-        'HOST': 'db',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }

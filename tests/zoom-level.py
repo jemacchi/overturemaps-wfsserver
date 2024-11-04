@@ -17,7 +17,8 @@ def calculate_zoom_level(bbox, tile_size=4096, max_zoom=14):
     
     return zoom_level
 
-bbox = [-0.3216,43.3589,19.3074,50.6545]  
+bbox = [2.876294,51.199333,2.932827,51.222203]
+#bbox = [-0.3216,43.3589,19.3074,50.6545]
 zoom_level = calculate_zoom_level(bbox)
 print(f"Best zoom level based on bbox : {zoom_level}")
 
