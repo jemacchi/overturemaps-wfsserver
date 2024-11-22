@@ -27,6 +27,14 @@ class OverturemapsBuildingModel(models.Model):
     sources = models.ManyToManyField(OverturemapsSourceModel)
     geometry = models.MultiPolygonField()
 
+    subtype = models.CharField(max_length=100, blank=True, null=True)
+    classtype = models.CharField(max_length=100, blank=True, null=True)
+    num_floors = models.IntegerField(null=True)
+    height = models.FloatField(null=True)
+    roof_shape = models.CharField(max_length=100, blank=True, null=True)
+    roof_direction = models.FloatField(null=True)
+    roof_material = models.CharField(max_length=100, blank=True, null=True)
+
     def __str__(self):
         return self.geo_id
 
@@ -46,7 +54,6 @@ class OverturemapsBuildingFeatureType(FeatureType):
 
     def set_data(self, bb):
         self.bbox = bb
-        logger.debug('Bbox %s',str(bb))
         min_x, min_y, max_x, max_y = bb
         if is_bbox_contained(BBOXRequestBuildingModel, min_x, min_y, max_x, max_y):
             logger.debug('BBOX is already contained in database')
@@ -124,6 +131,13 @@ class OverturemapsBuildingFeatureType(FeatureType):
                             'update_time': properties['update_time'],
                             'has_parts': properties['has_parts'],
                             'geometry': geometry,
+                            'subtype': properties.get('subtype', ''),
+                            'classtype': properties.get('class', ''),
+                            'num_floors': properties.get('num_floors', 0),
+                            'height': properties.get('height', 0),
+                            'roof_shape': properties.get('roof_shape', ''),
+                            'roof_direction': properties.get('roof_direction', 0),
+                            'roof_material': properties.get('roof_material', '')
                         }
                     )
 

@@ -6,3 +6,4 @@ geojson
 geopandas
 shapely
 overturemaps==0.5.0
+django-cors-headers

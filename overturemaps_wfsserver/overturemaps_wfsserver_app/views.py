@@ -41,14 +41,21 @@ class OverturemapsWFSView(WFSView):
         self.KVP = {key.upper(): value for key, value in request.GET.items()}
         req = self.KVP.get("REQUEST")
         if req == "GetFeature":
+            bbox = None
+            extractor = BoundingBoxExtractor()
             # get BBOX from filter (only in PoC)
-            filter = self.KVP.get("FILTER")
-            if filter is not None:
-                extractor = BoundingBoxExtractor(filter)
-                bbox = extractor.get_bbox()                
-                # update BBOX on FeatureTypes
+            filter_param = self.KVP.get("FILTER")
+            bbox_param = self.KVP.get("BBOX")
+            if filter_param is not None and bbox_param is None:
+                # then extract BBOX from Filter
+                bbox = extractor.get_bbox_from_filter(filter_param)
+            if filter_param is None and bbox_param is not None:
+                # then extract BBOX from bbox_param
+                bbox = extractor.get_bbox_from_param(bbox_param)
+            # update BBOX on FeatureTypes
+            if bbox is not None:
+                logger.debug('BBOX %s',str(bbox))
                 self.buildings_ft.set_data(bbox)
-
         # then call the get in super
         ret = super().get(request,args,kwargs)
         return ret
