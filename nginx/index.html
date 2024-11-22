@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OvertureMaps Buildings 3D with MapLibre</title>
+  <script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
+  <link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet">
+  <style>
+    body { margin: 0; padding: 0; }
+    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script>
+    // "https://api.maptiler.com/maps/basic/{z}/{x}/{y}.png?key=yourkey"
+    // "http://localhost:8080/geoserver/gwc/service/tms/1.0.0/overturemaps%3AOSM-WMS@EPSG%3A4326@png/{z}/{x}/{y}.png"
+
+    const map = new maplibregl.Map({
+      container: 'map',
+      style: {
+        "version": 8,
+        "sources": {
+	  "osm-tms": {
+	    "type": "raster",
+	    "tiles": [
+	      "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+	    ],
+	    "tileSize": 256,
+	    "attribution": "© OpenStreetMap contributors"
+	  }
+	},
+        "layers": [
+          {
+            "id": "osm-tms-tiles",
+            "type": "raster",
+            "source": "osm-tms",
+            "minzoom": 0,
+            "maxzoom": 19
+          }
+        ]
+      },
+      center: [-73.98623186756074, 40.729080587616565], // NY
+      zoom: 18, // initial zoom level
+      pitch: 60, // angle 3D view
+      bearing: -17.6 // map orientation
+    });
+
+    function updateGeoJSONSource() {
+      const bounds = map.getBounds();
+      const bbox = `${bounds.getWest()},${bounds.getSouth()},${bounds.getEast()},${bounds.getNorth()}`;
+      
+      const geojsonURL = `http://localhost:8000/wfs/overturemaps/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAME=app:overturemapsbuildingmodel&BBOX=${bbox}&OUTPUTFORMAT=geojson`;
+      
+      if (map.getSource('buildings')) {
+        map.getSource('buildings').setData(geojsonURL);
+      } else {
+        map.addSource('buildings', {
+          'type': 'geojson',
+          'data': geojsonURL
+        });
+        map.addLayer({
+          'id': '3d-buildings',
+          'type': 'fill-extrusion',
+          'source': 'buildings',
+          'paint': {
+            'fill-extrusion-color': '#888',
+            'fill-extrusion-height': ['get', 'height'],
+            'fill-extrusion-base': ['get', 'min_height'],
+            'fill-extrusion-opacity': 0.9
+          }
+        });
+      }
+    }
+
+    map.on('load', function () {
+      updateGeoJSONSource();
+    });
+    map.on('moveend', function () {
+      updateGeoJSONSource();
+    });
+  </script>
+</body>
+</html>

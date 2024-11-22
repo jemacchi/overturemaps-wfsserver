@@ -18,6 +18,9 @@ services:
     image: docker.osgeo.org/geoserver:2.25.2
     hostname: geoserver
     container_name: geoserver
+    environment:
+      - CORS_ENABLED=true
+      - CORS_ALLOWED_ORIGINS=*
     ports:
       - "8080:8080"
     volumes:
@@ -42,6 +45,15 @@ services:
       - db
     environment:
       - DEBUG=True
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    hostname: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx:/usr/share/nginx/html
 
 volumes:
   pg_data:
