@@ -103,21 +103,22 @@ class OverturemapsBuildingFeatureType(FeatureType):
                     logger.error(f"Error creating Polygon from feature {properties['id']},{geom}: {e}")
                     continue
                 else:
-                  if geom['type'] == "MultiPolygon":
-                    try:
-                      ccount = len(geom['coordinates'])
-                      holes = []
-                      for i in range(1, ccount):
-                        holes.append(Polygon(geom['coordinates'][i]))
-                      geomPoly = Polygon(geom['coordinates'][0])
-                      geometry = MultiPolygon(geomPoly, holes)
-                      geometry.srid = 4326
-                    except (ValueError, TypeError) as e:
-                      logger.error(f"Error creating MultiPolygon from feature {properties['id']},{geom}: {e}")
-                      continue
-                  else:
-                      logger.error(f"Feature {properties['id']} does not contains a valid geometry type {geom}")
-                      continue
+                    if geom['type'] == "MultiPolygon":
+                        try:
+                            polygons = []
+                            for polygon_coords in geom['coordinates']:
+                                exterior_coords = polygon_coords[0]
+                                holes = [Polygon(hole) for hole in polygon_coords[1:]]
+                                polygons.append(Polygon(exterior_coords, holes))
+
+                            geometry = MultiPolygon(polygons)
+                            geometry.srid = 4326
+                        except (ValueError, TypeError) as e:
+                            logger.error(f"Error creating MultiPolygon from feature {properties['id']},{geom}: {e}")
+                            continue
+                    else:
+                        logger.error(f"Feature {properties['id']} does not contain a valid geometry type {geom}")
+                        continue
 
                 if not geometry.valid:
                     logger.error(f"Feature {properties['id']} does not contains a valid geometry {geom}")
