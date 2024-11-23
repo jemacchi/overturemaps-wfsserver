@@ -109,8 +109,12 @@ class OverturemapsBuildingFeatureType(FeatureType):
                             for polygon_coords in geom['coordinates']:
                                 exterior_coords = polygon_coords[0][0]
                                 holes = [Polygon(hole) for hole in polygon_coords[0][1:]]
-                                polygons.append(Polygon(exterior_coords, holes))
+                                #polygons.append(Polygon(exterior_coords, holes))
+                                logger.debug(f"MultiPolygon exterior_coords coods {len(exterior_coords)}")
+                                logger.debug(f"MultiPolygon holes {len(holes)}")
+                                polygons.append(Polygon(exterior_coords))
 
+                            logger.debug(f"MultiPolygon geom size {len(geom['coordinates'])}")
                             geometry = MultiPolygon(polygons)
                             geometry.srid = 4326
                         except (ValueError, TypeError) as e:
