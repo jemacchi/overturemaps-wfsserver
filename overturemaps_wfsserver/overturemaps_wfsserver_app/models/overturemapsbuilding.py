@@ -107,8 +107,8 @@ class OverturemapsBuildingFeatureType(FeatureType):
                         try:
                             polygons = []
                             for polygon_coords in geom['coordinates']:
-                                exterior_coords = polygon_coords[0]
-                                holes = [Polygon(hole) for hole in polygon_coords[1:]]
+                                exterior_coords = polygon_coords[0][0]
+                                holes = [Polygon(hole) for hole in polygon_coords[0][1:]]
                                 polygons.append(Polygon(exterior_coords, holes))
 
                             geometry = MultiPolygon(polygons)
