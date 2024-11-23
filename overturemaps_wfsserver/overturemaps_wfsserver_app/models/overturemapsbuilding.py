@@ -124,22 +124,40 @@ class OverturemapsBuildingFeatureType(FeatureType):
                     continue
 
                 try:
-                    instance, created = OverturemapsBuildingModel.objects.update_or_create(
-                        geo_id=properties['id'],
-                        defaults={
-                            'version': properties['version'],
-                            'update_time': properties['update_time'],
-                            'has_parts': properties['has_parts'],
-                            'geometry': geometry,
-                            'subtype': properties.get('subtype', ''),
-                            'classtype': properties.get('class', ''),
-                            'num_floors': properties.get('num_floors', 0),
-                            'height': properties.get('height', 0),
-                            'roof_shape': properties.get('roof_shape', ''),
-                            'roof_direction': properties.get('roof_direction', 0),
-                            'roof_material': properties.get('roof_material', '')
-                        }
-                    )
+                    matches = OverturemapsBuildingModel.objects.filter(geo_id=properties['id'])
+
+                    if matches.exists():
+                        matches.update(
+                            version=properties['version'],
+                            update_time=properties['update_time'],
+                            has_parts=properties['has_parts'],
+                            geometry=geometry,
+                            subtype=properties.get('subtype', ''),
+                            classtype=properties.get('class', ''),
+                            num_floors=properties.get('num_floors', 0),
+                            height=properties.get('height', 0),
+                            roof_shape=properties.get('roof_shape', ''),
+                            roof_direction=properties.get('roof_direction', 0),
+                            roof_material=properties.get('roof_material', '')
+                        )
+                        instance = matches.first()
+                        created = False
+                    else:
+                        instance = OverturemapsBuildingModel.objects.create(
+                            geo_id=properties['id'],
+                            version=properties['version'],
+                            update_time=properties['update_time'],
+                            has_parts=properties['has_parts'],
+                            geometry=geometry,
+                            subtype=properties.get('subtype', ''),
+                            classtype=properties.get('class', ''),
+                            num_floors=properties.get('num_floors', 0),
+                            height=properties.get('height', 0),
+                            roof_shape=properties.get('roof_shape', ''),
+                            roof_direction=properties.get('roof_direction', 0),
+                            roof_material=properties.get('roof_material', '')
+                        )
+                        created = True
 
                     if not created:
                         instance.sources.clear()
@@ -152,7 +170,9 @@ class OverturemapsBuildingFeatureType(FeatureType):
                             confidence=source['confidence']
                         )
                         instance.sources.add(source_instance)
+
                     instances.append(instance)
+
                 except (ValueError, TypeError) as e:
                     logger.error(f"Error saving feature {properties['id']}: {e}")
                     continue
