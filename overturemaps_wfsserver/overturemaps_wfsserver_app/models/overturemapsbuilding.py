@@ -14,7 +14,7 @@ import logging
 
 logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
-    level=logging.DEBUG
+    level=logging.INFO
 )
 
 logger = logging.getLogger(__name__)
@@ -92,10 +92,10 @@ class OverturemapsBuildingFeatureType(FeatureType):
             for feature in features:
                 properties = feature['properties']
                 geom = feature['geometry']
-                
+
                 geometry = ''
                 if geom['type'] == "Polygon":
-                  try: 
+                  try:
                     geomPoly = Polygon(geom['coordinates'][0])
                     geometry = MultiPolygon(geomPoly)
                     geometry.srid = 4326
@@ -106,15 +106,17 @@ class OverturemapsBuildingFeatureType(FeatureType):
                     if geom['type'] == "MultiPolygon":
                         try:
                             polygons = []
+                            #logger.debug("Check coordinates")
                             for polygon_coords in geom['coordinates']:
                                 exterior_coords = polygon_coords[0][0]
                                 holes = [Polygon(hole) for hole in polygon_coords[0][1:]]
-                                #polygons.append(Polygon(exterior_coords, holes))
-                                logger.debug(f"MultiPolygon exterior_coords coods {len(exterior_coords)}")
-                                logger.debug(f"MultiPolygon holes {len(holes)}")
-                                polygons.append(Polygon(exterior_coords))
+                                #holes = []
+                                polygons.append(Polygon(exterior_coords, holes))
+                                #logger.debug(f"MultiPolygon exterior_coords coods {len(exterior_coords)}")
+                                #logger.debug(f"MultiPolygon holes {len(holes)}")
+                                #polygons.append(Polygon(exterior_coords))
 
-                            logger.debug(f"MultiPolygon geom size {len(geom['coordinates'])}")
+                            #logger.debug(f"MultiPolygon geom size {len(geom['coordinates'])}")
                             geometry = MultiPolygon(polygons)
                             geometry.srid = 4326
                         except (ValueError, TypeError) as e:
