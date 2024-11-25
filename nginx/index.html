@@ -8,30 +8,41 @@
   <link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet">
   <style>
     body { margin: 0; padding: 0; }
-    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+    #map { position: absolute; top: 0; bottom: 50px; width: 100%; }
+    #slider-container {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.8);
+      padding: 10px;
+      border-radius: 5px;
+    }
   </style>
 </head>
 <body>
   <div id="map"></div>
+  <div id="slider-container">
+    <label for="height-slider">Building Height Threshold:</label>
+    <input type="range" id="height-slider" min="0" max="150" value="150" step="5">
+    <span id="slider-value">150</span> meters
+  </div>
 
   <script>
-    // "https://api.maptiler.com/maps/basic/{z}/{x}/{y}.png?key=yourkey"
-    // "http://localhost:8080/geoserver/gwc/service/tms/1.0.0/overturemaps%3AOSM-WMS@EPSG%3A4326@png/{z}/{x}/{y}.png"
-
     const map = new maplibregl.Map({
       container: 'map',
       style: {
         "version": 8,
         "sources": {
-	  "osm-tms": {
-	    "type": "raster",
-	    "tiles": [
-	      "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-	    ],
-	    "tileSize": 256,
-	    "attribution": "© OpenStreetMap contributors"
-	  }
-	},
+          "osm-tms": {
+            "type": "raster",
+            "tiles": [
+              "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+            ],
+            "tileSize": 256,
+            "attribution": "© OpenStreetMap contributors"
+          }
+        },
         "layers": [
           {
             "id": "osm-tms-tiles",
@@ -47,6 +58,9 @@
       pitch: 60, // angle 3D view
       bearing: -17.6 // map orientation
     });
+
+    const heightSlider = document.getElementById('height-slider');
+    const sliderValue = document.getElementById('slider-value');
 
     function updateGeoJSONSource() {
       const bounds = map.getBounds();
@@ -66,7 +80,12 @@
           'type': 'fill-extrusion',
           'source': 'buildings',
           'paint': {
-            'fill-extrusion-color': '#888',
+            'fill-extrusion-color': [
+              'case',
+              ['>', ['get', 'height'], parseInt(heightSlider.value)],
+              '#FFD700',
+              '#888888'
+            ],
             'fill-extrusion-height': ['get', 'height'],
             'fill-extrusion-base': ['get', 'min_height'],
             'fill-extrusion-opacity': 0.9
@@ -74,6 +93,17 @@
         });
       }
     }
+    heightSlider.addEventListener('input', function () {
+      sliderValue.textContent = heightSlider.value;
+      if (map.getLayer('3d-buildings')) {
+        map.setPaintProperty('3d-buildings', 'fill-extrusion-color', [
+          'case',
+          ['>', ['get', 'height'], parseInt(heightSlider.value)],
+          '#FFD700',
+          '#888888'
+        ]);
+      }
+    });
 
     map.on('load', function () {
       updateGeoJSONSource();
