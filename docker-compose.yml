@@ -29,11 +29,11 @@ services:
       driver: "json-file"
       options:
         max-size: "10m"
+        max-file: "3"
     deploy:
       resources:
         limits:
           memory: 2048M
-        max-file: "3"
 
   overturemapsserver:
     build:
@@ -63,7 +63,6 @@ services:
       resources:
         limits:
           memory: 1024M
-
 
   nginx:
     image: nginx:latest
