@@ -25,6 +25,15 @@ services:
       - "8080:8080"
     volumes:
       - ./geoserver/datadir:/opt/geoserver_data
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+    deploy:
+      resources:
+        limits:
+          memory: 2048M
+        max-file: "3"
 
   overturemapsserver:
     build:
@@ -45,6 +54,16 @@ services:
       - db
     environment:
       - DEBUG=True
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          memory: 1024M
+
 
   nginx:
     image: nginx:latest
