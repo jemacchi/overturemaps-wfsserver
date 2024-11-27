@@ -41,6 +41,7 @@ services:
       dockerfile: Dockerfile
     hostname: overturemapsserver
     container_name: overturemapsserver
+    restart: always
     command: >
       sh -c "dockerize -wait tcp://db:5432 -timeout 60s &&
              python manage.py makemigrations &&

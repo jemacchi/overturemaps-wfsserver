@@ -1,6 +1,6 @@
 <wmsStore>
   <id>WMSStoreInfoImpl--5bba4775:1934ee4fb50:-7ffe</id>
-  <name>terrestris-osm</name>
+  <name>osm</name>
   <type>WMS</type>
   <enabled>true</enabled>
   <workspace>
@@ -11,6 +11,7 @@
   </metadata>
   <__default>false</__default>
   <dateCreated>2024-11-21 13:25:11.329 UTC</dateCreated>
+  <dateModified>2024-11-27 18:17:13.741 UTC</dateModified>
   <disableOnConnFailure>false</disableOnConnFailure>
   <capabilitiesURL>https://ows.terrestris.de/osm/service?SERVICE=WMS&amp;REQUEST=GetCapabilities</capabilitiesURL>
   <maxConnections>6</maxConnections>
