@@ -42,3 +42,10 @@ Whenever you modify Django models code in the app, then probably you will need t
 python manage.py makemigrations
 python manage.py migrate
 
+# Documentation & related links
+
+- FOSS4G 2024 - Belem, Brazil
+  
+  Resume: https://talks.osgeo.org/foss4g-2024/talk/FW8L77/
+  
+  Slides: https://talks.osgeo.org/media/foss4g-2024/submissions/FW8L77/resources/foss4g_2024_overturemaps_ZgEpoRc.pdf
